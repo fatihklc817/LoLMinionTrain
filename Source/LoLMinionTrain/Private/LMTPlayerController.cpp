@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "LMTCharacter.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraActor.h"
 
@@ -50,13 +51,15 @@ void ALMTPlayerController::SetupInputComponent()
 
 void ALMTPlayerController::OnMouseClick()
 {
-
+	
+	
 	FHitResult HitResult;
 	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult);
 
 	if (bHitSuccessful)
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this,HitResult.Location);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitResult.Location, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
 	
 }

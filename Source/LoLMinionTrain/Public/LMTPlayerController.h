@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "LMTPlayerController.generated.h"
 
+class UNiagaraSystem;
 class UInputAction;
 class UInputMappingContext;
 /**
@@ -16,8 +17,15 @@ class LOLMINIONTRAIN_API ALMTPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-
+	
+public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UNiagaraSystem* FXCursor;
+	
 protected:
+	/** FX Class that we will spawn when clicking */
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
