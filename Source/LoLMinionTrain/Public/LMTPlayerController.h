@@ -24,9 +24,7 @@ public:
 	UNiagaraSystem* FXCursor;
 	
 protected:
-	/** FX Class that we will spawn when clicking */
-
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 	

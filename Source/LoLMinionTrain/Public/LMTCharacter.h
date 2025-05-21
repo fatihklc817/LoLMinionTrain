@@ -11,33 +11,92 @@ class LOLMINIONTRAIN_API ALMTCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+protected:
+	
 #pragma region Components
-
-private:
+	
 	/** Top down camera */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	ACameraActor* TargetCameraActor;
 
-	
+	UPROPERTY()
+	class ALMTMinionBase* CurrentTarget;
+
+	/** camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* TopDownCameraComponent;
+
+	/** Camera boom positioning the camera above the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraSpringArmComponent;
+
 #pragma endregion Components
+
+#pragma region Properties
+
+	UPROPERTY(EditDefaultsOnly)
+	float AttackRange;
+
+	UPROPERTY()
+	FVector TargetLocation;
+
+	FVector AvoidingMoveLocation;
+
+	bool bAvoiding;
+
+	bool bCanAvoid = true;
+	FTimerHandle AvoidCooldownTimerHandle;
+
+	void ResetAvoidCooldown();
+	
+#pragma endregion Properties
 	
 	
 public:
-	// Sets default values for this character's properties
 	ALMTCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 	UFUNCTION()
-	FORCEINLINE ACameraActor* GetTargetCameraActor() const { return TargetCameraActor; };	
+	void Attack();
+
+	UFUNCTION()
+	bool CheckIsTargetInRange();
+
+	
+	// UFUNCTION()
+	// void OnCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	
+	UFUNCTION()
+	void OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit );
+	
+	//getter setter functions
+#pragma region GetterSetter
+	
+	UFUNCTION()
+	ACameraActor* GetTargetCameraActor();
+
+	UFUNCTION()
+	class ALMTMinionBase* GetCurrentTarget();
+
+	UFUNCTION()
+	void SetCurrentTarget(ALMTMinionBase* MinionTarget);
+
+	UFUNCTION()
+	void SetTargetLocation(FVector InLocation);
+	
+	
+	
+#pragma endregion GetterSetter
+	
+	
 
 };
