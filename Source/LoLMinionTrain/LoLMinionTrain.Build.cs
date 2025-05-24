@@ -8,7 +8,7 @@ public class LoLMinionTrain : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"AIModule","Niagara" ,"EnhancedInput", "NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"AIModule","Niagara" ,"EnhancedInput", "NavigationSystem" , "UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

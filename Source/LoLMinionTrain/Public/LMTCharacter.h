@@ -18,10 +18,7 @@ protected:
 	/** Top down camera */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	ACameraActor* TargetCameraActor;
-
-	UPROPERTY()
-	class ALMTMinionBase* CurrentTarget;
-
+	
 	/** camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -30,12 +27,44 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraSpringArmComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	class ULMTAttributeComp* AttributeComp;
+
 #pragma endregion Components
 
+	
 #pragma region Properties
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
+	TArray<UAnimMontage*> AttackMontages;
+	
+	UPROPERTY(EditDefaultsOnly ,Category="Attack")
 	float AttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
+	float Damage;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
+	TSubclassOf<class ALMTProjectileBase> ProjectileClass;
+
+	
+	UPROPERTY(VisibleAnywhere, Category="Attack")
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
+	float AttackSpeed;
+	
+	UPROPERTY(VisibleAnywhere, Category="Attack")
+	bool bIsAttackOnCooldown;
+
+	UPROPERTY(VisibleAnywhere, Category="Attack")
+	bool bIsAttacking;
+
+	UPROPERTY()
+	class ALMTMinionBase* CurrentTarget;
+
+	UPROPERTY()
+	ALMTMinionBase* LastTarget;
 
 	UPROPERTY()
 	FVector TargetLocation;
@@ -70,6 +99,14 @@ public:
 	UFUNCTION()
 	bool CheckIsTargetInRange();
 
+	UFUNCTION(BlueprintCallable)
+	void FireProjectile();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetAttack();
+
+	UFUNCTION()
+	void SetbIsAttacking(bool InValue);
 	
 	// UFUNCTION()
 	// void OnCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
@@ -84,10 +121,10 @@ public:
 	UFUNCTION()
 	ACameraActor* GetTargetCameraActor();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintPure)
 	class ALMTMinionBase* GetCurrentTarget();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentTarget(ALMTMinionBase* MinionTarget);
 
 	UFUNCTION()

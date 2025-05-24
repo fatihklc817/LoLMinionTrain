@@ -3,6 +3,8 @@
 
 #include "LMTCharacter.h"
 
+#include "LMTAttributeComp.h"
+#include "LMTProjectileBase.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -32,8 +34,13 @@ ALMTCharacter::ALMTCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraSpringArmComponent, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	AttributeComp = CreateDefaultSubobject<ULMTAttributeComp>(TEXT("AttributeComp"));
+	AttributeComp->SetHealth(AttributeComp->GetMaxHealth());
+	
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ALMTCharacter::OnCapsuleOverlap);
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this,&ALMTCharacter::OnCapsuleHit);
+
+	AttackSpeed =4.f;
 }
 
 // Called when the game starts or when spawned
@@ -55,6 +62,15 @@ void ALMTCharacter::Tick(float DeltaTime)
 		{
 			GetController()->StopMovement();
 			Attack();
+
+			FRotator CurrentRotation = GetActorRotation();
+			FVector Direction = (CurrentTarget->GetActorLocation() - GetActorLocation());
+			FRotator LookAtRotation = Direction.Rotation();
+			LookAtRotation.Pitch = 0.f;
+			LookAtRotation.Roll = 0.f;
+
+			FRotator NewRot = FMath::RInterpTo(CurrentRotation,LookAtRotation,DeltaTime, 5.f);
+			SetActorRotation(NewRot);
 		}
 	}
 
@@ -82,10 +98,20 @@ void ALMTCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void ALMTCharacter::Attack()
 {
-	if (CurrentTarget == nullptr) { return; }
+	if (!IsValid(CurrentTarget)) { return; }
+	if (bIsAttacking) { return; }
+	if (bIsAttackOnCooldown) { return; }
+
+	int32 RandomIndex = FMath::RandRange(0,1);
+	
+
+	LastTarget = CurrentTarget;
+	PlayAnimMontage(AttackMontages[RandomIndex]);
+	bIsAttacking = true;
+
 	
 	UE_LOG(LogTemp, Warning, TEXT("menzilde perform attack"));
-	CurrentTarget = nullptr;
+	
 	
 }
 
@@ -93,6 +119,33 @@ bool ALMTCharacter::CheckIsTargetInRange()
 {
 	return ((GetActorLocation() - CurrentTarget->GetActorLocation()).Length() <= AttackRange);
 }
+
+void ALMTCharacter::FireProjectile()
+{
+	FActorSpawnParameters spawnParameters;
+	spawnParameters.Owner = this;
+	spawnParameters.Instigator = this;
+	
+	
+	bIsAttackOnCooldown = true;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&ALMTCharacter::ResetAttack,AttackSpeed,false);
+
+	ALMTProjectileBase* Projectile = GetWorld()->SpawnActor<ALMTProjectileBase>(ProjectileClass,GetMesh()->GetSocketLocation("Bow_01Socket"),FRotator::ZeroRotator,spawnParameters);
+	Projectile->SetTargetActor(LastTarget);
+	Projectile->SetDamage(Damage);
+}
+
+void ALMTCharacter::ResetAttack()
+{
+	bIsAttacking = false;
+	bIsAttackOnCooldown = false;
+}
+
+void ALMTCharacter::SetbIsAttacking(bool InValue)
+{
+	bIsAttacking = InValue;
+}
+
 
 // void ALMTCharacter::OnCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 // {
@@ -199,6 +252,9 @@ void ALMTCharacter::ResetAvoidCooldown()
 {
 	bCanAvoid = true;
 }
+
+
+
 
 
 ACameraActor* ALMTCharacter::GetTargetCameraActor()

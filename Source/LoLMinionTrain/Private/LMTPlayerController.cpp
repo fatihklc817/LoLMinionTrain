@@ -75,6 +75,8 @@ void ALMTPlayerController::OnMouseClick()
 				{
 					UAIBlueprintHelperLibrary::SimpleMoveToLocation(this,HitResult.Location);
 					LMTCharacter->SetTargetLocation(HitResult.Location);
+					LMTCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(0.15f);
+					LMTCharacter->SetbIsAttacking(false);
 				}
 				
 			}
@@ -87,6 +89,9 @@ void ALMTPlayerController::OnMouseClick()
 			{
 				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this,NavLocation);
 				LMTCharacter->SetTargetLocation(HitResult.Location);
+				LMTCharacter->SetCurrentTarget(nullptr);
+				LMTCharacter->GetMesh()->GetAnimInstance()->Montage_Stop(0.15f);
+				LMTCharacter->SetbIsAttacking(false);
 			}
 		}
 		

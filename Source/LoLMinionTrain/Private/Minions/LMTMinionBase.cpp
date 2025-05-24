@@ -3,8 +3,11 @@
 
 #include "Minions/LMTMinionBase.h"
 
-#include "NavModifierComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "LMTAttributeComp.h"
+#include "Components/WidgetComponent.h"
+#include "UI/LMTWidgetBase.h"
+//#include "NavModifierComponent.h"
+//#include "Components/CapsuleComponent.h"
 
 
 ALMTMinionBase::ALMTMinionBase()
@@ -17,6 +20,15 @@ ALMTMinionBase::ALMTMinionBase()
 	// NavModifierComponent->SetComponentTickEnabled(false);
 
 	//GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+	AttributeComp = CreateDefaultSubobject<ULMTAttributeComp>(TEXT("AttributeComp"));
+	AttributeComp->SetHealth(AttributeComp->GetMaxHealth());
+	AttributeComp->OnHealthChanged.AddDynamic(this,&ALMTMinionBase::OnHealthChanged);
+
+	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
+	HealthBarWidget->SetupAttachment(RootComponent);
+	HealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthBarWidget->SetDrawSize(FVector2D(85.f,7.f));
 	
 }
 
@@ -27,11 +39,14 @@ void ALMTMinionBase::BeginPlay()
 	
 }
 
-
-void ALMTMinionBase::Tick(float DeltaTime)
+void ALMTMinionBase::OnHealthChanged(float NewHealthPercent)
 {
-	Super::Tick(DeltaTime);
-
+	ULMTWidgetBase* HealthWidget = Cast<ULMTWidgetBase>(HealthBarWidget->GetUserWidgetObject());
+	if (HealthWidget)
+	{
+		HealthWidget->SetHealthBar(NewHealthPercent);
+	}
+	
 }
 
 
