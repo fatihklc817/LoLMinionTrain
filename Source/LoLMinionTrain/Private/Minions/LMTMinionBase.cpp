@@ -4,6 +4,7 @@
 #include "Minions/LMTMinionBase.h"
 
 #include "LMTAttributeComp.h"
+#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/LMTWidgetBase.h"
 //#include "NavModifierComponent.h"
@@ -29,6 +30,9 @@ ALMTMinionBase::ALMTMinionBase()
 	HealthBarWidget->SetupAttachment(RootComponent);
 	HealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthBarWidget->SetDrawSize(FVector2D(85.f,7.f));
+
+	AttackRangeSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackRangeSphere"));
+	AttackRangeSphere->SetupAttachment(RootComponent);
 	
 }
 
@@ -38,6 +42,9 @@ void ALMTMinionBase::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
+
+
 
 void ALMTMinionBase::OnHealthChanged(float NewHealthPercent)
 {
@@ -50,9 +57,17 @@ void ALMTMinionBase::OnHealthChanged(float NewHealthPercent)
 }
 
 
+
+
 void ALMTMinionBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+USphereComponent* ALMTMinionBase::GetAttackRangeSphere()
+{
+	return AttackRangeSphere;
+}
+
 
