@@ -40,6 +40,8 @@ void ALMTProjectileBase::Tick(float DeltaTime)
 	FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation,TargetLocation,DeltaTime,ProjectileSpeed);
 
 	SetActorLocation(NewLocation);
+
+	UE_LOG(LogTemp, Warning, TEXT("distamce : %f"), FVector::Dist(NewLocation,TargetLocation));
 	
 	FRotator LookAtRotation = (TargetLocation - CurrentLocation).Rotation();
 	SetActorRotation(LookAtRotation);

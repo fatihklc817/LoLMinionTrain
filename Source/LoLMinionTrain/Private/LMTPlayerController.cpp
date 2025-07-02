@@ -63,7 +63,7 @@ void ALMTPlayerController::OnMouseClick()
 	{
 		if (ALMTMinionBase* HitMinion = Cast<ALMTMinionBase>(HitResult.GetActor()))
 		{
-			if (HitMinion->GetMinionTeam() == EMinionTeam::Enemy)
+			if (HitMinion->GetTeam() == ECharTeam::Red)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("hit minion name : %s"),*HitMinion->GetName());
 				LMTCharacter->SetCurrentTarget(HitMinion);

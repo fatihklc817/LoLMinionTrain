@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LMTBaseCharacter.h"
 #include "GameFramework/Character.h"
 #include "LMTCharacter.generated.h"
 
 UCLASS()
-class LOLMINIONTRAIN_API ALMTCharacter : public ACharacter
+class LOLMINIONTRAIN_API ALMTCharacter : public ALMTBaseCharacter
 {
 	GENERATED_BODY()
 

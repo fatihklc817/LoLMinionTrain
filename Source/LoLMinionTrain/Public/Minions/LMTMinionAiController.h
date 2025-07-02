@@ -20,16 +20,31 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> OverlappedTargets;
+
+	UPROPERTY(VisibleAnywhere)
+	class ALMTBaseCharacter* CurrentTarget;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bMoving;
 	
 	
 protected:
+	virtual void OnPossess(APawn* InPawn) override;
+	
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
-	void MoveForward();
+	void MoveToLaneEnd();
 	
 	UFUNCTION()
 	void CheckOverlappingTargets();
+
+	UFUNCTION()
+	FVector GetNearestLocationOnLane();
+
+	
+	
+	
 };
