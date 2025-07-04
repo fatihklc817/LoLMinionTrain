@@ -15,6 +15,10 @@ class LOLMINIONTRAIN_API ALMT_GameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly)
+	float waveSpawnSecond = 40;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class ALMTMinionBase> RedMeleeMinionClass;
 

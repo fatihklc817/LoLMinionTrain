@@ -12,7 +12,7 @@ void ALMT_GameModeBase::BeginPlay()
 
 	// spawn işlemi
 	FTimerHandle waveSpawnHandle;
-	GetWorld()->GetTimerManager().SetTimer(waveSpawnHandle, this, &ALMT_GameModeBase::SpawnMinionWaves, 45.f, true);
+	GetWorld()->GetTimerManager().SetTimer(waveSpawnHandle, this, &ALMT_GameModeBase::SpawnMinionWaves, waveSpawnSecond, true);
 	SpawnMinionWaves();
 	
 	
