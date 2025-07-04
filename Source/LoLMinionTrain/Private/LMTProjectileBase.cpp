@@ -4,6 +4,10 @@
 #include "LMTProjectileBase.h"
 
 #include "LMTAttributeComp.h"
+#include "LMTCharacter.h"
+#include "LMTPlayerController.h"
+#include "LMT_GameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ALMTProjectileBase::ALMTProjectileBase()
@@ -53,6 +57,18 @@ void ALMTProjectileBase::Tick(float DeltaTime)
 		if (targetAttribute)
 		{
 			targetAttribute->TakeDamage(Damage);
+			if (auto InstigatorChar =  Cast<ALMTCharacter>(GetInstigator()))
+			{
+				if (targetAttribute->GetHealth() <= 0 )
+				{
+					ALMT_GameModeBase* GameMode = Cast<ALMT_GameModeBase>(UGameplayStatics::GetGameMode(this));
+					GameMode->IncrementCsScore();
+					
+					ALMTPlayerController* PController = Cast<ALMTPlayerController>(InstigatorChar->GetController());
+					PController->UpdateCsScoreHud(GameMode->GetCsScore());
+					//UE_LOG(LogTemp, Warning, TEXT("CS SCORE : %f"),GameMode->GetCsScore());
+				}
+			}
 		}
 		Destroy();
 	}
@@ -61,8 +77,11 @@ void ALMTProjectileBase::Tick(float DeltaTime)
 
 void ALMTProjectileBase::SetTargetActor(AActor* InActor)
 {
-	TargetActor = InActor;
-	UE_LOG(LogTemp, Warning, TEXT("target actor : %s"),*TargetActor->GetName());
+	if (InActor != nullptr)
+	{
+		TargetActor = InActor;
+		UE_LOG(LogTemp, Warning, TEXT("target actor : %s"),*TargetActor->GetName());
+	}
 }
 
 void ALMTProjectileBase::SetDamage(float InDamage)

@@ -37,6 +37,9 @@ protected:
 	int32 RedRangedMinionSpawnCount= 3;
 
 	FTimerHandle MinionSpawnHandle;
+
+	
+	float CsScore;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -46,4 +49,11 @@ protected:
 
 	UFUNCTION()
 	void SpawnNextMinion();
+
+public:
+	UFUNCTION()
+	void IncrementCsScore();
+
+	UFUNCTION()
+	float GetCsScore();
 };

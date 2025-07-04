@@ -111,3 +111,13 @@ void ALMT_GameModeBase::SpawnNextMinion()
 	
 	
 }
+
+void ALMT_GameModeBase::IncrementCsScore()
+{
+	CsScore++;
+}
+
+float ALMT_GameModeBase::GetCsScore()
+{
+	return CsScore;
+}

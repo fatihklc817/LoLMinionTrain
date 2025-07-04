@@ -105,59 +105,114 @@ void ALMTMinionAiController::MoveToLaneEnd()
 
 void ALMTMinionAiController::CheckOverlappingTargets()
 {
+	//
+	// // Hedefi kontrol et
+	// if (CurrentTarget)
+	// {
+	// 	if (CurrentTarget->IsPendingKill()||  !ControlledMinion->GetAttackRangeSphere()->IsOverlappingActor(CurrentTarget) )
+	// 	{
+	// 		CurrentTarget = nullptr; // Target düştü veya menzil dışı
+	// 		StopMovement();
+	// 		bMoving = false;
+	// 	}
+	// }
+	//
+	// if (!CurrentTarget)
+	// {
+	// 	USphereComponent* AttackRangeSphere = ControlledMinion->GetAttackRangeSphere();
+	// 	OverlappedTargets.Empty();
+	// 	
+	// 	AttackRangeSphere->GetOverlappingActors(OverlappedTargets, ACharacter::StaticClass());
+	//
+	// 	float NearestDistance = AttackRangeSphere->GetScaledSphereRadius();
+	// 	ALMTBaseCharacter* NearestTarget = nullptr;
+	// 	
+	// 	
+	// 	if (OverlappedTargets.Num() > 0)
+	// 	{
+	// 		for (AActor* TargetActor : OverlappedTargets)
+	// 		{
+	// 			if (TargetActor == ControlledMinion) continue;
+	// 			if (ALMTBaseCharacter* TargetbaseChar = Cast<ALMTBaseCharacter>(TargetActor))
+	// 			{
+	// 				//UE_LOG(LogTemp, Warning, TEXT("bi charla overlap etti"));
+	// 				if (TargetbaseChar->GetTeam() != ControlledMinion->GetTeam())
+	// 				{
+	// 					UE_LOG(LogTemp, Warning, TEXT("düsmandur daa"));
+	// 					const float Distance = FVector::Dist(ControlledMinion->GetActorLocation(), TargetbaseChar->GetActorLocation());
+	//
+	// 					if (Distance <= NearestDistance)
+	// 					{
+	// 						NearestDistance = Distance;
+	// 						NearestTarget = TargetbaseChar;
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	//
+	// 	if (NearestTarget != nullptr)
+	// 	{
+	// 		CurrentTarget = NearestTarget;
+	// 		ControlledMinion ->SetTarget(CurrentTarget);
+	// 	}
+	// 	
+	// }
+	//
+	//
 
-	// Hedefi kontrol et
-	if (CurrentTarget)
-	{
-		if (CurrentTarget->IsPendingKill()||  !ControlledMinion->GetAttackRangeSphere()->IsOverlappingActor(CurrentTarget) )
-		{
-			CurrentTarget = nullptr; // Target düştü veya menzil dışı
-			StopMovement();
-			bMoving = false;
-		}
-	}
-
-	if (!CurrentTarget)
-	{
+	
 		USphereComponent* AttackRangeSphere = ControlledMinion->GetAttackRangeSphere();
 		OverlappedTargets.Empty();
-		
+	
 		AttackRangeSphere->GetOverlappingActors(OverlappedTargets, ACharacter::StaticClass());
 
 		float NearestDistance = AttackRangeSphere->GetScaledSphereRadius();
 		ALMTBaseCharacter* NearestTarget = nullptr;
-		
-		
-		if (OverlappedTargets.Num() > 0)
-		{
-			for (AActor* TargetActor : OverlappedTargets)
-			{
-				if (TargetActor == ControlledMinion) continue;
-				if (ALMTBaseCharacter* TargetbaseChar = Cast<ALMTBaseCharacter>(TargetActor))
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("bi charla overlap etti"));
-					if (TargetbaseChar->GetTeam() != ControlledMinion->GetTeam())
-					{
-						UE_LOG(LogTemp, Warning, TEXT("düsmandur daa"));
-						const float Distance = FVector::Dist(ControlledMinion->GetActorLocation(), TargetbaseChar->GetActorLocation());
 
-						if (Distance <= NearestDistance)
-						{
-							NearestDistance = Distance;
-							NearestTarget = TargetbaseChar;
-						}
+		for (AActor* TargetActor : OverlappedTargets)
+		{
+			if (TargetActor == ControlledMinion) continue;
+
+			if (ALMTBaseCharacter* TargetBaseChar = Cast<ALMTBaseCharacter>(TargetActor))
+			{
+				if (TargetBaseChar->GetTeam() != ControlledMinion->GetTeam())
+				{
+					const float Distance = FVector::Dist(ControlledMinion->GetActorLocation(), TargetBaseChar->GetActorLocation());
+					if (Distance <= NearestDistance)
+					{
+						NearestDistance = Distance;
+						NearestTarget = TargetBaseChar;
 					}
 				}
 			}
 		}
 
-		if (NearestTarget != nullptr)
+		// Eğer elimizde yeni bir target varsa ve CurrentTarget yoksa veya bu daha yakınsa ona geç
+		if (NearestTarget)
 		{
-			CurrentTarget = NearestTarget;
-			ControlledMinion ->SetTarget(CurrentTarget);
+			// Eğer zaten başka bir hedef varsa ve bu hedef başkaysa ona geç
+			if (CurrentTarget != NearestTarget)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Target değiştirildi: %s -> %s"), 
+					*GetNameSafe(CurrentTarget), 
+					*GetNameSafe(NearestTarget));
+
+				CurrentTarget = NearestTarget;
+				ControlledMinion->SetTarget(CurrentTarget);
+			}
 		}
-		
-	}
+		else
+		{
+			// Eğer menzilde kimse kalmadıysa hedefi sıfırla
+			if (CurrentTarget)
+			{
+				CurrentTarget = nullptr;
+				ControlledMinion->SetTarget(nullptr);
+				StopMovement();
+				bMoving = false;
+			}
+		}
 	
 	
 }

@@ -143,6 +143,7 @@ void ALMTMinionBase::OnCapsuleHit(UPrimitiveComponent* HitComponent, AActor* Oth
 		bAvoiding = true;
 		bCanAvoid = false;
 		GetWorld()->GetTimerManager().SetTimer(AvoidCooldownTimerHandle, this, &ALMTMinionBase::ResetAvoidCooldown, 0.5f, false);
+		GetWorld()->GetTimerManager().SetTimer(AvoidTimeoutHandle, this, &ALMTMinionBase::ForceStopAvoiding, 2.f, false);
 		
 		
 	}
@@ -163,6 +164,7 @@ void ALMTMinionBase::Tick(float DeltaSeconds)
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), TargetLocation);
 			UE_LOG(LogTemp, Warning, TEXT("avoidance bitti targete gidiyom aga "));
 			bAvoiding = false;
+			GetWorld()->GetTimerManager().ClearTimer(AvoidTimeoutHandle);
 		}
 	}
 }
@@ -219,6 +221,16 @@ void ALMTMinionBase::SetTargetLocation(FVector InTargetLocation)
 bool ALMTMinionBase::GetBAvoiding()
 {
 	return bAvoiding;
+}
+
+void ALMTMinionBase::ForceStopAvoiding()
+{
+	if (bAvoiding)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Avoidance timeout, forcing stop."));
+		bAvoiding = false;
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), TargetLocation);
+	}
 }
 
 

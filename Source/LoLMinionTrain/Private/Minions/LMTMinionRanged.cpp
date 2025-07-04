@@ -16,6 +16,9 @@ void ALMTMinionRanged::FireProjectile()
 	GetWorld()->GetTimerManager().SetTimer(AttackTimer,this,&ALMTMinionBase::ResetAttack,AttackSpeed,false);
 
 	ALMTProjectileBase* Projectile = GetWorld()->SpawnActor<ALMTProjectileBase>(ProjectileClass,GetMesh()->GetSocketLocation("StaffSocket"),FRotator::ZeroRotator,spawnParameters);
-	Projectile->SetTargetActor(LastTarget);
-	Projectile->SetDamage(Damage);
+	if (LastTarget)
+	{
+		Projectile->SetTargetActor(LastTarget);
+		Projectile->SetDamage(Damage);
+	}
 }

@@ -4,7 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "UI/LMTWidgetText.h"
 #include "LMTPlayerController.generated.h"
+
+
+enum class ECursorState : uint8
+{
+	Default,
+	Attack
+};
+
 
 class UNiagaraSystem;
 class UInputAction;
@@ -19,9 +28,30 @@ class LOLMINIONTRAIN_API ALMTPlayerController : public APlayerController
 
 	
 public:
+	UPROPERTY(EditDefaultsOnly,Category= UI )
+	TSubclassOf<UUserWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	ULMTWidgetText* HUDWidget;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
+	TSubclassOf<UUserWidget> CursorDefaultWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* CursorWidget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
+	TSubclassOf<UUserWidget> CursorAttackWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* CursorAtkWidget;
+
+	ECursorState CurrentCursorState;
+
+
 	
 protected:
 	
@@ -36,9 +66,15 @@ protected:
 
 
 	virtual void BeginPlay() override;
-
+	
+	virtual void Tick(float DeltaSeconds) override;
+	
 	virtual void SetupInputComponent() override;
 
 	void OnMouseClick();
+
+public:
+
+	void UpdateCsScoreHud(float InValue);
 	
 };

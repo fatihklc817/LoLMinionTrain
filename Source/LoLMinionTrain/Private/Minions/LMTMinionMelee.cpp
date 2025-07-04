@@ -7,6 +7,11 @@
 
 void ALMTMinionMelee::ApplyMeleeDamageToTarget()
 {
+	if (LastTarget == nullptr)
+	{
+		return;
+	}
+	
 	ULMTAttributeComp* targetAttribute = LastTarget->GetComponentByClass<ULMTAttributeComp>();
 	if (targetAttribute)
 	{

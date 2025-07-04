@@ -65,6 +65,7 @@ protected:
 
 	bool bCanAvoid = true;
 	FTimerHandle AvoidCooldownTimerHandle;
+	FTimerHandle AvoidTimeoutHandle;
 
 	void ResetAvoidCooldown();
 
@@ -122,5 +123,8 @@ public:
 
 	UFUNCTION()
 	bool GetBAvoiding();
+
+	UFUNCTION()
+	void ForceStopAvoiding();
 
 };
