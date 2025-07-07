@@ -56,6 +56,13 @@ void ALMTProjectileBase::Tick(float DeltaTime)
 		ULMTAttributeComp* targetAttribute = TargetActor->GetComponentByClass<ULMTAttributeComp>();
 		if (targetAttribute)
 		{
+			// Eğer hedef zaten ölmüşse işlem yapma
+			if (targetAttribute->GetHealth() <= 0.f)
+			{
+				Destroy();
+				return;
+			}
+
 			targetAttribute->TakeDamage(Damage);
 			if (auto InstigatorChar =  Cast<ALMTCharacter>(GetInstigator()))
 			{
