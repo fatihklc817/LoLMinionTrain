@@ -4,6 +4,7 @@
 #include "LMTCharacter.h"
 
 #include "LMTAttributeComp.h"
+#include "LMTPlayerController.h"
 #include "LMTProjectileBase.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
@@ -40,7 +41,7 @@ ALMTCharacter::ALMTCharacter()
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ALMTCharacter::OnCapsuleOverlap);
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this,&ALMTCharacter::OnCapsuleHit);
 
-	AttackSpeed =4.f;
+	AttackSpeed =1.f;
 }
 
 // Called when the game starts or when spawned
@@ -106,7 +107,7 @@ void ALMTCharacter::Attack()
 	
 
 	LastTarget = CurrentTarget;
-	PlayAnimMontage(AttackMontages[RandomIndex]);
+	PlayAnimMontage(AttackMontages[RandomIndex],1.3f/ AttackSpeed);
 	bIsAttacking = true;
 
 	
@@ -144,6 +145,16 @@ void ALMTCharacter::ResetAttack()
 void ALMTCharacter::SetbIsAttacking(bool InValue)
 {
 	bIsAttacking = InValue;
+}
+
+void ALMTCharacter::SetAttackSpeed(float InValue)
+{
+	AttackSpeed = InValue;
+}
+
+void ALMTCharacter::SetAttackDamage(float InValue)
+{
+	Damage = InValue;
 }
 
 

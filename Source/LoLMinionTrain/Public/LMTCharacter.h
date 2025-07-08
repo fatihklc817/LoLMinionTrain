@@ -108,7 +108,12 @@ public:
 
 	UFUNCTION()
 	void SetbIsAttacking(bool InValue);
-	
+
+	UFUNCTION(blueprintCallable)
+	void SetAttackSpeed(float InValue);
+
+	UFUNCTION(blueprintCallable)
+	void SetAttackDamage(float InValue);
 	// UFUNCTION()
 	// void OnCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 

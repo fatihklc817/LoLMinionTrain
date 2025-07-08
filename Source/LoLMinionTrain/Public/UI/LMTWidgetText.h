@@ -17,9 +17,12 @@ class LOLMINIONTRAIN_API ULMTWidgetText : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CsScore;
 
+
 public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCsScore(float inValue);
+
+
 	
 };

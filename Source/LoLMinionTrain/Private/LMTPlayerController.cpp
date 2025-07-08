@@ -52,6 +52,7 @@ void ALMTPlayerController::BeginPlay()
 			float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
 			FVector2D ScaledMousePosition = MousePosition / ViewportScale;
 			CursorWidget->SetPositionInViewport(ScaledMousePosition, false);
+			CursorWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 		}
 	}
 
@@ -114,11 +115,11 @@ void ALMTPlayerController::Tick(float DeltaSeconds)
 		if (CurrentCursorState == ECursorState::Attack)
 		{
 			CursorWidget->SetVisibility(ESlateVisibility::Hidden);
-			CursorAtkWidget->SetVisibility(ESlateVisibility::Visible);
+			CursorAtkWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 		}
 		else
 		{
-			CursorWidget->SetVisibility(ESlateVisibility::Visible);
+			CursorWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 			CursorAtkWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
@@ -194,3 +195,9 @@ void ALMTPlayerController::UpdateCsScoreHud(float InValue)
 {
 	HUDWidget->SetCsScore(InValue);
 }
+
+
+
+
+
+

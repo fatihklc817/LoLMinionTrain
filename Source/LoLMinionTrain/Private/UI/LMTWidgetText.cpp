@@ -3,6 +3,7 @@
 
 #include "UI/LMTWidgetText.h"
 
+#include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 
 void ULMTWidgetText::SetCsScore(float inValue)
@@ -10,3 +11,5 @@ void ULMTWidgetText::SetCsScore(float inValue)
 	FString ScoreText = FString::Printf(TEXT("CS SCORE : %d"), FMath::RoundToInt(inValue));
 	CsScore->SetText(FText::FromString(ScoreText));
 }
+
+
