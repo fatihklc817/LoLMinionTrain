@@ -3,6 +3,8 @@
 
 #include "LMTAttributeComp.h"
 
+#include "Minions/LMTMinionBase.h"
+
 
 ULMTAttributeComp::ULMTAttributeComp()
 {
@@ -31,7 +33,13 @@ bool ULMTAttributeComp::TakeDamage(float DamageAmount)
 		OnHealthChanged.Broadcast(CurrentHealth / MaxHealth);
 		if (CurrentHealth <= 0)
 		{
-			GetOwner()->Destroy();
+			ALMTMinionBase* ownerMinion = Cast<ALMTMinionBase>(GetOwner());
+			if (ownerMinion)
+			{
+				ownerMinion->PlayDeathAnim();
+			}
+
+			//GetOwner()->Destroy();
 		}
 		return true;
 		

@@ -34,6 +34,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly,meta=(AllowPrivateAccess=true))
 	UAnimMontage* AttackMontage;
 
+	UPROPERTY(EditDefaultsOnly)
+	UAnimMontage* DeathMontage;
+
 	UPROPERTY(EditDefaultsOnly, Category="Attack")
 	float Damage;
 	
@@ -126,5 +129,8 @@ public:
 
 	UFUNCTION()
 	void ForceStopAvoiding();
+
+	UFUNCTION()
+	void PlayDeathAnim(); 
 
 };

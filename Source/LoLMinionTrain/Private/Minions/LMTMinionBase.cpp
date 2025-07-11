@@ -233,4 +233,21 @@ void ALMTMinionBase::ForceStopAvoiding()
 	}
 }
 
+void ALMTMinionBase::PlayDeathAnim()
+{
+	if (DeathMontage)
+	{
+
+		AController* myController = GetController();
+		myController->UnPossess();
+		myController->Destroy();
+		
+		HealthBarWidget->SetVisibility(false);
+		this->SetActorEnableCollision(false);
+		
+		PlayAnimMontage(DeathMontage);
+		
+	}
+}
+
 
