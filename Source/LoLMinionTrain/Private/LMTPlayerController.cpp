@@ -18,15 +18,19 @@
 void ALMTPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
+
+	int32 ViewportX, ViewportY;
+	GetViewportSize(ViewportX, ViewportY);
 	
-	// if (ACameraActor* TargetCamera = Cast<ALMTCharacter>(GetPawn())->GetTargetCameraActor())
-	// {
-	// 	SetViewTarget(TargetCamera);
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("target camera alinamadi"));
-	// }
+	// Mouse pozisyonu alınamadıysa ortadan başlat
+	CursorPosition = FVector2D(ViewportX * 0.5f, ViewportY * 0.5f);
+	
+	
+	
+	
+	
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -47,11 +51,12 @@ void ALMTPlayerController::BeginPlay()
 		if (CursorWidget)
 		{
 			CursorWidget->AddToViewport();
-			FVector2D MousePosition;
-			GetMousePosition(MousePosition.X, MousePosition.Y);
-			float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
-			FVector2D ScaledMousePosition = MousePosition / ViewportScale;
-			CursorWidget->SetPositionInViewport(ScaledMousePosition, false);
+			//FVector2D MousePosition;
+			//GetMousePosition(MousePosition.X, MousePosition.Y);
+			
+			//FVector2D ScaledMousePosition = MousePosition / ViewportScale;
+			
+			CursorWidget->SetPositionInViewport(CursorPosition / ViewportScale , false);
 			CursorWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 		}
 	}
@@ -73,27 +78,41 @@ void ALMTPlayerController::BeginPlay()
 void ALMTPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
 	
 	ECursorState NewState = ECursorState::Default;
 	float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
+
+	float DeltaX, DeltaY;
+	GetInputMouseDelta(DeltaX, DeltaY);
+
+	DeltaX *= 12 * MouseSensitivity;
+	DeltaY *= 12 * -MouseSensitivity;
+
+	CursorPosition.X += DeltaX;
+	CursorPosition.Y += DeltaY;
+
+	int32 ViewportX, ViewportY;
+	GetViewportSize(ViewportX, ViewportY);
 	
+	CursorPosition.X = FMath::Clamp(CursorPosition.X , 0.0f, (float)ViewportX);
+	CursorPosition.Y = FMath::Clamp(CursorPosition.Y , 0.0f, (float)ViewportY);
 	
-	FVector2D MousePosition;
-	if (GetMousePosition(MousePosition.X, MousePosition.Y))
+	FVector2D scaledCursorPos = CursorPosition / ViewportScale;
+
+
+	if (CursorWidget)
 	{
-		FVector2D ScaledMousePosition = MousePosition / ViewportScale;
-		if (CursorWidget)
-		{
-			CursorWidget->SetPositionInViewport(ScaledMousePosition, false);
-		}
-		if (CursorAtkWidget)
-		{
-			CursorAtkWidget->SetPositionInViewport(ScaledMousePosition, false);
-		}
+		CursorWidget->SetPositionInViewport(scaledCursorPos, false);
+	}
+	if (CursorAtkWidget)
+	{
+		CursorAtkWidget->SetPositionInViewport(scaledCursorPos, false);
 	}
 	
+	
 	FHitResult HitResult;
-	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult);
+	bool bHitSuccessful = GetHitResultAtScreenPosition(CursorPosition ,ECollisionChannel::ECC_Visibility, true, HitResult);
 	
 	if (bHitSuccessful)
 	{
@@ -148,7 +167,7 @@ void ALMTPlayerController::OnMouseClick()
 	ALMTCharacter* LMTCharacter = Cast<ALMTCharacter>(GetPawn());
 	
 	FHitResult HitResult;
-	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, HitResult);
+	bool bHitSuccessful = GetHitResultAtScreenPosition(CursorPosition, ECollisionChannel::ECC_Visibility, true, HitResult);
 	
 	if (bHitSuccessful)
 	{
@@ -194,6 +213,11 @@ void ALMTPlayerController::OnMouseClick()
 void ALMTPlayerController::UpdateCsScoreHud(float InValue)
 {
 	HUDWidget->SetCsScore(InValue);
+}
+
+void ALMTPlayerController::SetMouseSens(float InValue)
+{
+	MouseSensitivity = InValue;
 }
 
 

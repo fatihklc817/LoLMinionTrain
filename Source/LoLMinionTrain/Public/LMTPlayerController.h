@@ -51,7 +51,10 @@ public:
 
 	ECursorState CurrentCursorState;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float MouseSensitivity = 1.0f;
 
+	FVector2D CursorPosition;
 	
 protected:
 	
@@ -63,6 +66,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MouseRightClickAction;
+
+	bool bFirstFrame;
 
 
 	virtual void BeginPlay() override;
@@ -77,6 +82,7 @@ public:
 
 	void UpdateCsScoreHud(float InValue);
 
-
+	UFUNCTION(BlueprintCallable)
+	void SetMouseSens(float InValue);
 	
 };
