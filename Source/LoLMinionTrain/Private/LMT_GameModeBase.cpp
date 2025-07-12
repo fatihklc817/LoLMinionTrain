@@ -11,7 +11,6 @@ void ALMT_GameModeBase::BeginPlay()
 
 
 	// spawn işlemi
-	FTimerHandle waveSpawnHandle;
 	GetWorld()->GetTimerManager().SetTimer(waveSpawnHandle, this, &ALMT_GameModeBase::SpawnMinionWaves, waveSpawnSecond, true);
 	SpawnMinionWaves();
 	
@@ -21,6 +20,8 @@ void ALMT_GameModeBase::BeginPlay()
 void ALMT_GameModeBase::SpawnMinionWaves()
 {
 
+	SpawnedMinions.Empty();
+	
 	//MeleeMinionSpawnCount = 3;
 	BlueMeleeMinionSpawnCount= 3;
 	RedMeleeMinionSpawnCount= 3;
@@ -43,7 +44,7 @@ void ALMT_GameModeBase::SpawnMinionWaves()
 
 void ALMT_GameModeBase::SpawnNextMinion()
 {
-
+	
 	
 	// if (MeleeMinionSpawnCount >0 )
 	// {
@@ -60,7 +61,8 @@ void ALMT_GameModeBase::SpawnNextMinion()
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		GetWorld()->SpawnActor<ALMTMinionBase>(BlueMeleeMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
+		auto Minion = GetWorld()->SpawnActor<ALMTMinionBase>(BlueMeleeMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
+		SpawnedMinions.Add(Minion);
 
 		BlueMeleeMinionSpawnCount--;
 	}
@@ -69,7 +71,8 @@ void ALMT_GameModeBase::SpawnNextMinion()
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		GetWorld()->SpawnActor<ALMTMinionBase>(RedMeleeMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
+		auto Minion = GetWorld()->SpawnActor<ALMTMinionBase>(RedMeleeMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
+		SpawnedMinions.Add(Minion);
 
 		RedMeleeMinionSpawnCount--;
 		return;
@@ -91,8 +94,9 @@ void ALMT_GameModeBase::SpawnNextMinion()
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		GetWorld()->SpawnActor<ALMTMinionBase>(BlueRangedMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
-
+		auto Minion = GetWorld()->SpawnActor<ALMTMinionBase>(BlueRangedMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
+		SpawnedMinions.Add(Minion);
+		
 		BlueRangedMinionSpawnCount--;
 	}
 
@@ -100,8 +104,9 @@ void ALMT_GameModeBase::SpawnNextMinion()
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		GetWorld()->SpawnActor<ALMTMinionBase>(RedRangedMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
-
+		auto Minion = GetWorld()->SpawnActor<ALMTMinionBase>(RedRangedMinionClass, FVector(0.f,0.f,500.f), FRotator(0.f,0.f,0.f), SpawnParams);
+		SpawnedMinions.Add(Minion);
+		
 		RedRangedMinionSpawnCount--;
 		return;
 	}
@@ -120,4 +125,17 @@ void ALMT_GameModeBase::IncrementCsScore()
 float ALMT_GameModeBase::GetCsScore()
 {
 	return CsScore;
+}
+
+void ALMT_GameModeBase::ResetWave()
+{
+	for (auto minion : SpawnedMinions)
+	{
+		minion->Destroy();
+	}
+	
+	GetWorld()->GetTimerManager().ClearTimer(waveSpawnHandle);
+	GetWorld()->GetTimerManager().SetTimer(waveSpawnHandle, this, &ALMT_GameModeBase::SpawnMinionWaves, waveSpawnSecond, true);
+	SpawnMinionWaves();
+	
 }

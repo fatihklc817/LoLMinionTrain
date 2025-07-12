@@ -31,6 +31,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class ALMTMinionBase> BlueRangedMinionClass;
 	
+	UPROPERTY()
+	TArray<ALMTMinionBase*> SpawnedMinions; 
 	
 	int32 MeleeMinionSpawnCount= 3;
 	int32 BlueMeleeMinionSpawnCount= 3;
@@ -40,6 +42,9 @@ protected:
 	int32 BlueRangedMinionSpawnCount= 3;
 	int32 RedRangedMinionSpawnCount= 3;
 
+
+	FTimerHandle waveSpawnHandle;
+	
 	FTimerHandle MinionSpawnHandle;
 
 	
@@ -60,4 +65,7 @@ public:
 
 	UFUNCTION()
 	float GetCsScore();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetWave();
 };
