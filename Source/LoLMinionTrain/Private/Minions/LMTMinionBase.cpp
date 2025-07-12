@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/LMTWidgetBase.h"
 //#include "NavModifierComponent.h"
 //#include "Components/CapsuleComponent.h"
@@ -239,6 +240,11 @@ void ALMTMinionBase::PlayDeathAnim()
 	{
 
 		AController* myController = GetController();
+		if (!myController)
+		{
+			return;
+		}
+		
 		myController->UnPossess();
 		myController->Destroy();
 		
@@ -247,7 +253,18 @@ void ALMTMinionBase::PlayDeathAnim()
 		
 		PlayAnimMontage(DeathMontage);
 		
+		
 	}
+}
+
+TSubclassOf<UUserWidget> ALMTMinionBase::GetGoldWidgetClass()
+{
+	return GoldPopupWidgetClass;
+}
+
+USoundBase* ALMTMinionBase::GetGoldCollectSound()
+{
+	return GoldCollectSound;
 }
 
 

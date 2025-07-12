@@ -31,6 +31,13 @@ protected:
 	
 	
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserWidget> GoldPopupWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* GoldCollectSound;
+	
 	UPROPERTY(EditDefaultsOnly,meta=(AllowPrivateAccess=true))
 	UAnimMontage* AttackMontage;
 
@@ -131,6 +138,12 @@ public:
 	void ForceStopAvoiding();
 
 	UFUNCTION()
-	void PlayDeathAnim(); 
+	void PlayDeathAnim();
+
+	UFUNCTION()
+	TSubclassOf<UUserWidget> GetGoldWidgetClass();
+
+	UFUNCTION()
+	USoundBase* GetGoldCollectSound();
 
 };

@@ -7,7 +7,9 @@
 #include "LMTCharacter.h"
 #include "LMTPlayerController.h"
 #include "LMT_GameModeBase.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Minions/LMTMinionBase.h"
 
 // Sets default values
 ALMTProjectileBase::ALMTProjectileBase()
@@ -74,9 +76,41 @@ void ALMTProjectileBase::Tick(float DeltaTime)
 					ALMTPlayerController* PController = Cast<ALMTPlayerController>(InstigatorChar->GetController());
 					PController->UpdateCsScoreHud(GameMode->GetCsScore());
 					//UE_LOG(LogTemp, Warning, TEXT("CS SCORE : %f"),GameMode->GetCsScore());
+					auto TargetMinion = Cast<ALMTMinionBase>(TargetActor);
+					if (TargetMinion == nullptr) return;
+					
+					if (TSubclassOf<UUserWidget> GoldPopupWidgetClass = TargetMinion ->GetGoldWidgetClass())
+					{
+						APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+						if (PC)
+						{
+							UUserWidget* GoldPopupWidget = CreateWidget<UUserWidget>(PC, GoldPopupWidgetClass);
+							if (GoldPopupWidget)
+							{
+								FVector2D ScreenPosition;
+								FVector MinionWorldPos = TargetActor->GetActorLocation() + FVector(0.f, 0.f, 100.f); // biraz yukarı kaydır
+
+								PC->ProjectWorldLocationToScreen(MinionWorldPos, ScreenPosition);
+
+								float ViewportScale = UWidgetLayoutLibrary::GetViewportScale(PC);
+								ScreenPosition /= ViewportScale;
+
+								GoldPopupWidget->AddToViewport();
+								GoldPopupWidget->SetPositionInViewport(ScreenPosition, false);
+								
+								if (auto Sound = TargetMinion->GetGoldCollectSound())
+								{
+									UGameplayStatics::PlaySound2D(this,Sound);
+								}
+							}
+						}
+					}
+					
+					
 				}
 			}
 		}
+		
 		Destroy();
 	}
 	
