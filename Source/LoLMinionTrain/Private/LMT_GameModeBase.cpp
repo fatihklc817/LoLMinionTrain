@@ -131,7 +131,10 @@ void ALMT_GameModeBase::ResetWave()
 {
 	for (auto minion : SpawnedMinions)
 	{
-		minion->Destroy();
+		if (minion)
+		{
+			minion->Destroy();
+		}
 	}
 	
 	GetWorld()->GetTimerManager().ClearTimer(waveSpawnHandle);
