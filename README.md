@@ -1,6 +1,7 @@
 # LoLMinionTrain
 game for lol cs last hit training
 
+https://fatihklc817.itch.io/lol-minion-train
 
 <img width="2549" height="1393" alt="image" src="https://github.com/user-attachments/assets/994f7bcf-f063-487e-9caa-703e29942824" />
 
